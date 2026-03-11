@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<robot name="exam_robot">
+
+  <!-- ===================== МАТЕРИАЛЫ ===================== -->
+  <material name="blue">
+    <color rgba="0.0 0.0 1.0 1.0"/>
+  </material>
+  
+  <material name="black">
+    <color rgba="0.1 0.1 0.1 1.0"/>
+  </material>
+  
+  <material name="red">
+    <color rgba="1.0 0.0 0.0 1.0"/>
+  </material>
+
+  <!-- ===================== BASE_LINK (КОРПУС) ===================== -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.4 0.3 0.1"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.4 0.3 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ===================== LEFT_WHEEL (ЛЕВОЕ КОЛЕСО) ===================== -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.08" length="0.04"/>
+      </geometry>
+      <!-- Поворачиваем цилиндр на 90° вокруг Y, чтобы ось цилиндра была по Y (для вращения вокруг Z) -->
+      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.08" length="0.04"/>
+      </geometry>
+      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- Сустав левого колеса (непрерывное вращение) -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0 0.17 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>  <!-- Вращение вокруг оси Z -->
+    <limit effort="100" velocity="10"/>
+    <dynamics damping="0.1" friction="0.01"/>
+  </joint>
+
+  <!-- ===================== RIGHT_WHEEL (ПРАВОЕ КОЛЕСО) ===================== -->
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.08" length="0.04"/>
+      </geometry>
+      <!-- Поворачиваем цилиндр на 90° вокруг Y, чтобы ось цилиндра была по Y (для вращения вокруг Z) -->
+      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.08" length="0.04"/>
+      </geometry>
+      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- Сустав правого колеса (непрерывное вращение) -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="0 -0.17 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>  <!-- Вращение вокруг оси Z -->
+    <limit effort="100" velocity="10"/>
+    <dynamics damping="0.1" friction="0.01"/>
+  </joint>
+
+  <!-- ===================== SENSOR_LINK (ДАТЧИК РАССТОЯНИЯ) ===================== -->
+  <link name="sensor_link">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- Сустав датчика (фиксированный) -->
+  <joint name="sensor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sensor_link"/>
+    <!-- x=+0.2 (спереди), z=+0.08 (сверху) от центра base_link -->
+    <origin xyz="0.2 0 0.08" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===================== ДОПОЛНИТЕЛЬНО: ВИЗУАЛИЗАЦИЯ ОСЕЙ ===================== -->
+  <!-- Опционально: добавляем небольшие маркеры для наглядности при отладке -->
+  <link name="axis_marker_x">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+  </link>
+  
+  <joint name="axis_marker_x_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="axis_marker_x"/>
+    <origin xyz="0.2 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Пояснение: в URDF оси координат:
+       x - вперед (красный)
+       y - влево (зеленый) 
+       z - вверх (синий) -->
+
+</robot>
